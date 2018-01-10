@@ -1,13 +1,9 @@
 package com.wdy.common;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +12,23 @@ public class Config {
     private static final Logger logger = LoggerFactory.getLogger(Config.class);
     private final Properties prop;
     private final String configFile = Constants.CONFIG_FILE_NAME;
-    private static final Config instantce = new Config();
+    private static final Config instance = new Config();
 
     private Config() {
         prop = new Properties();
         loadConfig();
     }
 
-    public static Config getInstance() {
-        return instantce;
+    public static Config instance() {
+        return instance;
     }
 
+    public Config reload() {
+    	prop.clear();
+    	loadConfig();
+    	return instance;
+    }
+    
     private void loadConfig() {
         try {
             InputStream input = this.getClass().getClassLoader().getResourceAsStream(configFile);
@@ -52,24 +54,23 @@ public class Config {
         prop.setProperty(key, value);
     }
     
-	public Set<String> getSeedsUrl() {
-		String seedUrlFile = Constants.CFG_SEEDURL_FILE;
-		Set<String> seeds = new HashSet<String>();
-		try {
-			String strPath = Util.class.getClassLoader().getResource(seedUrlFile).getPath();
-			File file = new File(strPath);
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line = br.readLine();
-			while (line != null) {
-				if (!line.startsWith("#") && !line.isEmpty()) {
-					logger.debug("Seed Url: " + line);
-					seeds.add(line);
-				}
-				line = br.readLine();
-			}
-		} catch (Exception e) {
-			logger.error("Failed to read url seeds file " + seedUrlFile, e);
-		}
-		return seeds;
-	}
+    public String getCrawlerStorageFolder() {
+    	return get(Constants.CFG_CRAWL_STORAGE_FOLDER);
+    }
+    
+    public int getCrawlerNum() {
+    	return Integer.parseInt(getOrDefault(Constants.CFG_CRAWLERS_NUMBERS, "5").toString());
+    }
+    
+    public int getMaxPageNum() {
+    	return Integer.parseInt(getOrDefault(Constants.CFG_MAX_PAGE_NUM, "1000").toString());
+    }
+    
+    public String getCrawlerClassName() {
+    	return get(Constants.CFG_CRAWLER);
+    }
+    
+    public String getOutputFile() {
+    	return get(Constants.CFG_OUTPUT_FILE);
+    }
 }

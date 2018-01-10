@@ -12,4 +12,5 @@ public final class Constants {
     public static final String CFG_OUTPUT_FILE = "output.file";
     public static final String CFG_MAX_PAGE_NUM = "max.page.number";
     public static final String CFG_SEEDURL_FILE = "seedurl";
+    public static final String CFG_CRAWLER = "crawler.class.name";
 }

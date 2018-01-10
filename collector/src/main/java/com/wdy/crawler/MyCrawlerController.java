@@ -1,4 +1,4 @@
-package com.wdy.mycrawler;
+package com.wdy.crawler;
 
 import java.util.Set;
 
@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wdy.common.Config;
-import com.wdy.common.Constants;
 import com.wdy.common.MyRobotstxtServer;
+import com.wdy.io.SeedsInput;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
+import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
@@ -20,28 +21,31 @@ public class MyCrawlerController {
 
 	public static void main(String[] args) throws Exception {
 
-		String crawlStorageFolder = Config.getInstance().get(Constants.CFG_CRAWL_STORAGE_FOLDER);
+		String crawlStorageFolder = Config.instance().getCrawlerStorageFolder();
 		if (crawlStorageFolder == null || crawlStorageFolder.isEmpty()) {
-			logger.error("No crawl storage folder is provided. Please check the {}",
-					Constants.CFG_CRAWL_STORAGE_FOLDER);
+			logger.error("No valid crawl storage folder is provided in config file.");
 			return;
 		}
 
 		logger.debug(crawlStorageFolder);
-		int numberOfCrawlers = Integer
-				.parseInt(Config.getInstance().getOrDefault(Constants.CFG_CRAWLERS_NUMBERS, "3").toString());
+		int numberOfCrawlers = Config.instance().getCrawlerNum();
 
 		CrawlConfig config = new CrawlConfig();
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(1000);
 
 		config.setMaxDepthOfCrawling(2);
-		config.setMaxPagesToFetch(
-				Integer.parseInt(Config.getInstance().getOrDefault(Constants.CFG_MAX_PAGE_NUM, "1000").toString()));
+		config.setMaxPagesToFetch(Config.instance().getMaxPageNum());
 
 		config.setIncludeBinaryContentInCrawling(false);
 		config.setResumableCrawling(false);
+		
+		//config.setConnectionTimeout(60000);
+		//config.setSocketTimeout(60000);
+		config.setRespectNoIndex(false);
 
+		logger.debug("Crawler Config:\n{}", config.toString());
+		
 		/*
 		 * Instantiate the controller for this crawl.
 		 */
@@ -50,12 +54,15 @@ public class MyCrawlerController {
 		RobotstxtServer robotstxtServer = new MyRobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		Set<String> seeds = Config.getInstance().getSeedsUrl();
+		SeedsInput seedsInput = new SeedsInput();
+		Set<String> seeds = seedsInput.getSeedsUrl();
 		for (String url : seeds) {
-			logger.debug("Adding URL Seed: " + url);
+			logger.debug("Adding Seed URL: " + url);
 			controller.addSeed(url);
 		}
 
-		controller.start(MyCrawler.class, numberOfCrawlers);
+		Class<?> crawlerClass = Class.forName(Config.instance().getCrawlerClassName());
+		logger.info("Start crawler: " + crawlerClass.getName());
+		controller.start(crawlerClass.asSubclass(WebCrawler.class), numberOfCrawlers);
 	}
 }
