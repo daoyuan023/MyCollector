@@ -10,9 +10,10 @@ public class JobInfo {
 	private String id;
 	private String type;
 	private String details;
+	private String company;
 
 	public JobInfo(String title, String summary, String detailsLink, String listDate, String location, String notes,
-			String id, String type, String details) {
+			String id, String type, String details, String company) {
 		super();
 		this.title = title;
 		this.summary = summary;
@@ -23,6 +24,7 @@ public class JobInfo {
 		this.id = id;
 		this.type = type;
 		this.details = details;
+		this.company = company;
 	}
 
 	public String getType() {
@@ -99,5 +101,13 @@ public class JobInfo {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getCompany() {
+		return company;
+	}
+	
+	public void setCompany(String company) {
+		this.company = company;
 	}
 }

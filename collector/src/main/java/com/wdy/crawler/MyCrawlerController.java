@@ -1,5 +1,7 @@
 package com.wdy.crawler;
 
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -7,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import com.wdy.common.Config;
 import com.wdy.common.MyRobotstxtServer;
+import com.wdy.io.DataBuffer;
+import com.wdy.io.DataWriter;
 import com.wdy.io.SeedsInput;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
@@ -20,7 +24,6 @@ public class MyCrawlerController {
 	private static final Logger logger = LoggerFactory.getLogger(MyCrawlerController.class);
 
 	public static void main(String[] args) throws Exception {
-
 		String crawlStorageFolder = Config.instance().getCrawlerStorageFolder();
 		if (crawlStorageFolder == null || crawlStorageFolder.isEmpty()) {
 			logger.error("No valid crawl storage folder is provided in config file.");
@@ -34,14 +37,12 @@ public class MyCrawlerController {
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		config.setPolitenessDelay(1000);
 
-		config.setMaxDepthOfCrawling(2);
+		config.setMaxDepthOfCrawling(5);
 		config.setMaxPagesToFetch(Config.instance().getMaxPageNum());
 
 		config.setIncludeBinaryContentInCrawling(false);
 		config.setResumableCrawling(false);
 		
-		//config.setConnectionTimeout(60000);
-		//config.setSocketTimeout(60000);
 		config.setRespectNoIndex(false);
 
 		logger.debug("Crawler Config:\n{}", config.toString());
@@ -61,8 +62,20 @@ public class MyCrawlerController {
 			controller.addSeed(url);
 		}
 
+		initDataBuffer(controller);
+		
 		Class<?> crawlerClass = Class.forName(Config.instance().getCrawlerClassName());
 		logger.info("Start crawler: " + crawlerClass.getName());
+		
 		controller.start(crawlerClass.asSubclass(WebCrawler.class), numberOfCrawlers);
+	}
+
+	private static void initDataBuffer(CrawlController controller) {
+		DataBuffer dataBuffer = new DataBuffer();
+		controller.setCustomData(dataBuffer);
+		
+		DataWriter dataWriter = new DataWriter(dataBuffer);
+		Thread dataWriterThread = new Thread(dataWriter, "DataWriterThread");
+		dataWriterThread.start();
 	}
 }

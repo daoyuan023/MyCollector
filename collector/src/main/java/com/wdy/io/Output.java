@@ -25,6 +25,9 @@ public abstract class Output {
 		return records;
 	}
 
+	/*
+	 * Extract the fields and values by calling their getters, 'getClass' is an exception 
+	 */
 	protected Map<String, String> extractDataRecord(Object data) {
 		Collection<Method> methods = Utils.getMethods(data.getClass());
 		Map<String, String> records = new HashMap<String, String>();
@@ -46,6 +49,9 @@ public abstract class Output {
 		return records;
 	}
 
+	/*
+	 * Write the object's fields and values to the log file
+	 */
 	public void write(Object obj) {
 		Map<String, String> data = extractDataRecord(obj);
 		logger.info("=============== " + obj.getClass().getSimpleName() + " ===============");

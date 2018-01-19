@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -26,7 +25,8 @@ public class FileOutput extends Output {
 	public FileOutput(String fileName) {
 		createOutputFile(fileName);
 	}
-	public void createOutputFile(String fileName) {
+	
+	private void createOutputFile(String fileName) {
 		String filePath = Config.instance().getCrawlerStorageFolder() + File.separator + fileName;
 		outputFile = new File(filePath);
 
@@ -40,7 +40,7 @@ public class FileOutput extends Output {
 		}
 	}
 
-	public void writeToOutputFile(String content) {
+	public void writeToFile(String content) {
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(outputFile, true));
@@ -53,9 +53,9 @@ public class FileOutput extends Output {
 
 	public void write(Object obj) {
 		Map<String, String> data = extractDataRecord(obj);
-		writeToOutputFile("=============== " + obj.getClass().getSimpleName() + " ===============");
+		writeToFile("\n=============== " + obj.getClass().getSimpleName() + " ===============");
 		for (Entry<String, String> entry : data.entrySet()) {
-			writeToOutputFile(entry.getKey() + ": " + entry.getValue());
+			writeToFile(String.format("<-- %s -->: %s", entry.getKey(), entry.getValue()));
 		}
 	}
 }
