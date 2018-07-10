@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.wdy.common.Utils;
 import com.wdy.io.DataBuffer;
-import com.wdy.io.FileOutput;
-import com.wdy.io.Output;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;

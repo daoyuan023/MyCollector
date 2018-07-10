@@ -1,7 +1,5 @@
 package com.wdy.crawler;
 
-import java.lang.invoke.MethodHandles;
-import java.net.URL;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -11,7 +9,7 @@ import com.wdy.common.Config;
 import com.wdy.common.MyRobotstxtServer;
 import com.wdy.io.DataBuffer;
 import com.wdy.io.DataWriter;
-import com.wdy.io.SeedsInput;
+import com.wdy.io.SeedsReader;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -55,7 +53,7 @@ public class MyCrawlerController {
 		RobotstxtServer robotstxtServer = new MyRobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		SeedsInput seedsInput = new SeedsInput();
+		SeedsReader seedsInput = new SeedsReader();
 		Set<String> seeds = seedsInput.getSeedsUrl();
 		for (String url : seeds) {
 			logger.debug("Adding Seed URL: " + url);

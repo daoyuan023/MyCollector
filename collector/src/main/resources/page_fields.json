@@ -1,0 +1,47 @@
+{
+	"field_schema": {
+		"pages":[{
+			"URL": "https://bj.lianjia.com/ershoufang/",
+			"fields": [{
+				"field_name": "totalHouseForSale",
+				"pattern": "<div class=\"resultDes clear\"><h2 class=\"total fl\">([^<>]*)<span>([0-9\\s]+)</span>",
+				"match_index": 2
+			}]
+		},{
+			"URL": "https://bj.lianjia.com/fangjia/",
+			"fields": [{
+				"field_name": "lastMonth",
+				"pattern": "\"month\":\"(\\d{2})[^\"]*\",\"year\":\"(\\d{4})[^\"]*\",\"monthTrans\":(\\d+)",
+				"match_index": 1
+			},{
+				"field_name": "yearOfLastMonth",
+				"pattern": "\"month\":\"(\\d{2})[^\"]*\",\"year\":\"(\\d{4})[^\"]*\",\"monthTrans\":(\\d+)",
+				"match_index": 2
+			},{
+				"field_name": "lastMonthAvgPrice",
+				"pattern": "\"month\":\"(\\d{2})[^\"]*\",\"year\":\"(\\d{4})[^\"]*\",\"monthTrans\":(\\d+)",
+				"match_index": 3
+			},{
+				"field_name": "monthOfLastDay",
+				"pattern": "\"time\":\\{\"cust_house_date_string\":\"(\\d{2})[^\"]+(\\d{2})[^\"]+\"\\}",
+				"match_index": 1
+			},{
+				"field_name": "lastDay",
+				"pattern": "\"time\":\\{\"cust_house_date_string\":\"(\\d{2})[^\"]+(\\d{2})[^\"]+\"\\}",
+				"match_index": 2
+			},{
+				"field_name": "showAmount",
+				"pattern": "\"showAmount\":(\\d+),\"ratio\"",
+				"match_index": 1
+			},{
+				"field_name": "customerAmount",
+				"pattern": "\"customerAmount\":(\\d+),\"houseAmount\":(\\d+)",
+				"match_index": 1
+			},{
+				"field_name": "houseAmountChanged",
+				"pattern": "\"customerAmount\":(\\d+),\"houseAmount\":(\\d+)",
+				"match_index": 2
+			}]
+		}]
+	}
+}

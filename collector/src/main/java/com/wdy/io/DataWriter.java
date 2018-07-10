@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 public class DataWriter implements Runnable {
 
-	private static final Logger logger = LoggerFactory.getLogger(SeedsInput.class);
+	private static final Logger logger = LoggerFactory.getLogger(SeedsReader.class);
 	private DataBuffer dataBuffer;
 	
 	public DataWriter(DataBuffer dataBuffer) {

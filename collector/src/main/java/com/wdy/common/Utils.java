@@ -15,24 +15,37 @@ import org.slf4j.LoggerFactory;
 public final class Utils {
 	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
-	public static Set<String> search(String input, String parttenStr, int groupIndex) {
+	public static Set<String> search(String input, String partten, int groupIndex) {
 		Set<String> result = new HashSet<String>();
-		Pattern pattern = Pattern.compile(parttenStr, Pattern.MULTILINE);
+		Pattern pattern = Pattern.compile(partten, Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(input);
-		while (matcher.find()) {
-			if (groupIndex != 0) {
-				result.add(matcher.group(groupIndex));
-			} else {
-				result.add(matcher.group());
+		try {
+			while (matcher.find()) {
+				logger.debug("matcher group 0: {}", matcher.group(0));
+				if (groupIndex != 0) {
+					result.add(matcher.group(groupIndex));
+					logger.debug("matcher group {}: {}", groupIndex, matcher.group(groupIndex));
+				} else {
+					result.add(matcher.group());
+				}
 			}
+		} catch (IndexOutOfBoundsException e) {
+			logger.error("Incorrect groupIndex{}: {}", groupIndex, e.getMessage());
 		}
 		return result;
 	}
 
+	/*
+	 * groupIndex starts from 1, and 0 is for the original input
+	 */
 	public static String extractInfo(String input, String pattern, int groupIndex) {
 		return extractInfo(input, pattern, groupIndex, false);
 	}
 
+	/*
+	 * merge: true, combine multiple matched results into one with "\n"
+	 * 		  false, return the last matched result
+	 */
 	public static String extractInfo(String input, String pattern, int groupIndex, boolean merge) {
 		String result = "";
 		Set<String> setStr = Utils.search(input, pattern, groupIndex);
